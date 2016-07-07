@@ -1,0 +1,20 @@
+﻿@model Tournament.Core.Models.Tournament
+
+@{
+    ViewData["Title"] = "Delete " + Model.DisplayName;
+}
+<div class="center-block text-center">
+<h2>Are you sure you want to delete "@Model.DisplayName"?</h2>
+
+<div class="form-inline clearfix ">
+    <div class="form-group-lg">
+        <form asp-controller="Home" asp-action="Delete" class="form-group" method="post" role="form">
+            <button type="submit" class="btn btn-lg btn-danger">Yes</button>
+        </form>
+        <form asp-controller="Home" asp-action="Index" class="form-group" style="margin-left: 1em" method="get" role="form">
+            <button type="submit" class="btn btn-lg btn-primary">No</button>
+        </form>
+    </div>
+
+</div>
+</div>

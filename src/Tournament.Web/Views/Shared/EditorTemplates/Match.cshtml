@@ -1,0 +1,27 @@
+﻿@model Tournament.Core.Models.Match
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var tempClass = Model.WinnerId == null ? "removeSelected" : "";
+}
+
+<div class="col-md-6 col-lg-4 round-@Model.Round">
+    <input asp-for="Id" type="hidden"/>
+
+    <h4>@Model.DisplayName</h4>
+    <input asp-for="DisplayName" value="@Model.DisplayName" type="hidden"/>
+    <input asp-for="Round" value="@Model.Round" type="hidden"/>
+    <div class="form-group">
+        <label asp-for="WinnerId" class="form-label">Select a Winner</label>
+
+        <select asp-for="WinnerId" class="form-control center-block text-center">
+            <option value="">&lt;none&gt;</option>
+            @for (var i = 0; i < Model.Teams.Count; i++)
+            {
+                <option class="@tempClass" value="@Model.Teams[i].Id">@Model.Teams[i].Name</option>
+            }
+        </select>
+    </div>
+    @Html.EditorFor(m => m.Teams)
+</div>

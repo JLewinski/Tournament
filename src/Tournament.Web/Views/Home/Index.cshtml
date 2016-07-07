@@ -1,0 +1,42 @@
+﻿@model List<Tournament.Core.Models.Tournament>
+@{
+    ViewData["Title"] = "Tournament Page";
+    var userId = UserManager.GetUserId(User);
+}
+@inject UserManager<ApplicationUser> UserManager
+<div>
+    <h2 class="page-header">@ViewData["Title"]</h2>
+</div>
+<div>
+    <a asp-controller="Home" asp-action="Create">Create New</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Creator</th>
+        <th>Round</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        var userName = item.UserName ?? "N/A";
+        <tr>
+            <td>@item.DisplayName</td>
+            <td>@userName</td>
+            <td>@item.CurrentRound</td>
+            <td>
+
+                <a asp-controller="Home" asp-action="Round" asp-route-id="@item.Id" class="alert-link">View</a>
+                @if (userId == item.UserId|| item.UserId == null)
+                {
+                    <span>|</span>
+                    <a asp-controller="Home" asp-action="Edit" asp-route-id="@item.Id" class="alert-link">Edit</a>
+                    <span>|</span>
+                    <a asp-controller="Home" asp-action="Delete" asp-route-id="@item.Id" class="alert-link">Delete</a>
+
+                }
+            </td>
+        </tr>
+    }
+</table>

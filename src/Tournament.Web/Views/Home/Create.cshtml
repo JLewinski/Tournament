@@ -1,0 +1,77 @@
+﻿@model Tournament.Core.ViewModel.ICreateViewModel
+
+@{
+    ViewData["Title"] = "New Tournament";
+}
+
+<div>
+    <h2 class="page-header">@ViewData["Title"]</h2>
+</div>
+
+<form class="row" asp-controller="Home" asp-action="Create" method="post" role="form">
+    
+    <h3 class="panel-heading">General:</h3>
+    <div class="form-inline">
+        <div class="form-group col-sm-6 col-md-5">
+            <label asp-for="@Model.Tournament.DisplayName" class="control-label">Tournament Name</label>
+            <input asp-for="@Model.Tournament.DisplayName" class="form-control"/>
+        </div>
+        <div class="form-group col-sm-4 col-md-5 col-sm-offset-1 col-md-offset-1 col-lg-offset-2">
+            <label asp-for="@Model.NumberTeams" class="control-label">Tournament Name</label>
+            <input asp-for="@Model.NumberTeams" class="form-control"/>
+        </div>
+    </div>
+
+    <h3 class="panel-heading">Teams/Players:</h3>
+    <div id="teams">
+        @for (int i = 0; i < 128; i++)
+        {
+            var stringNum = i < 9 ? $"00{i+1}" : i < 99 ? $"0{i+1}" : $"{i+1}";
+
+            <div id="team_@i" class="form-group col-sm-4 col-md-3 col-lg-2" hidden="hidden">
+                <label asp-for="@Model.Tournament.Teams[i].Name">Player @stringNum</label>
+                <input asp-for="@Model.Tournament.Teams[i].Name" class="form-control" />
+            </div>
+        }
+    </div>
+
+    <button id="submitButton" type="submit" style="position: fixed; bottom: 10%; width: 80%;"
+            class="btn btn-success btn-lg">
+        Submit
+    </button>
+
+</form>
+
+<br />
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var max = @Model.Tournament.Teams.Count;
+        var changeNum = function () {
+            var numPeople = parseInt($("#NumberTeams").val());
+
+            while (numPeople > max) {
+                var name = 'Player ' + (max + 1);
+                $("#teams").append('<div id="team_' + max + '" class="form-group col-sm-4 col-md-3 col-lg-2">'
+                    +'<label for="Tournament_Teams_'+ max + '__Name">' + name + '</label>'
+                    +'<input class="form-control" type="text" id="Tournament_Teams_' + max + '__Name" name="Tournament.Teams[' + max + '].Name" value="' + name + '" />'+
+                    '</div>');
+                max++;
+            }
+
+            for (var i = 0; i < max; i++) {
+                if (i >= numPeople) {
+                    $("#team_" + i).fadeOut();
+                } else {
+                    $("#team_" + i).fadeIn();
+                }
+            }
+
+        }
+
+        $("#NumberTeams").change(changeNum);
+
+        changeNum();
+    });
+</script>

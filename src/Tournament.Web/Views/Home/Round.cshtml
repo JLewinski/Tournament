@@ -1,0 +1,100 @@
+﻿@model Tournament.Core.ViewModel.RoundViewModel
+
+@inject UserManager<ApplicationUser> UserManager
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = Model.Tournament.DisplayName;
+}
+
+<div class="page-header">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+
+
+
+<form asp-controller="Home" asp-action="Round" class="row" method="post">
+    @Html.EditorFor(vm => vm.Tournament)
+    <input asp-for="@Model.Tournament.DisplayName" type="hidden"/>
+
+    <div class="center-block text-center">
+        <span id="decreaseButton" class="glyphicon glyphicon-chevron-left btn btn-default"></span>
+        <span id="roundLabel" class="btn"></span>
+        <span type="button" id="increaseButton" class="glyphicon glyphicon-chevron-right btn btn-default"></span>
+    </div>
+
+    <input class="form-control" asp-for="@Model.Round" value="@Model.Round" type="hidden" />
+
+    <div id="roundDiv" class="center-block text-center">
+        @Html.EditorFor(vm => vm.Tournament.Matches)
+
+        <br/><br /><br />
+
+        @if (Model.Tournament.UserId == null || Model.Tournament.UserId == UserManager.GetUserId(User))
+        {
+            <button id="submitButton" type="submit" style="position: fixed; bottom: 10%; width: 80%; right: 10%"
+                    class="btn btn-success btn-lg">
+                Save/Next Round
+            </button>
+        }
+    </div>
+
+    @if (Model.Tournament.IsFinished)
+    {
+        var winnerName = Model.Tournament.Teams.Single(p => !p.IsEliminated).Name;
+        <div id="winnerDiv" class="center-block text-center">
+            <h2>Congrats @winnerName</h2>
+            <h3>You Win!</h3>
+            <br /><br /><br />
+            <a asp-action="Index" asp-controller="Home" class="btn btn-default btn-lg">Home</a>
+            <a asp-action="Delete" asp-controller="Home" asp-route-id="@Model.Tournament.Id" class="btn btn-default btn-lg">Delete</a>
+        </div>
+    }
+
+
+</form>
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document)
+        .ready(function () {
+            $(".removeSelected").removeAttr("selected");
+
+            var isFinnished = @(Model.Tournament.IsFinished ? "true" : "false");
+
+            var changeRound = function(r) {
+                return function() {
+                    var maxRound = @Model.Tournament.CurrentRound;
+                    var round = parseInt($("#@nameof(Model.Round)").val()) + r;
+                    if (round > maxRound) {
+                        round = maxRound;
+                    } else if (round === 0) {
+                        round = 1;
+                    }
+                    for (var i = 1; i <= maxRound; i++) {
+                        if (i === round) {
+                            $(".round-" + i).show();
+                        } else {
+                            $(".round-" + i).hide();
+                        }
+                    }
+                    if (round === maxRound && isFinnished) {
+                        $("#roundDiv").hide();
+                        $("#winnerDiv").show();
+                    } else {
+                        $("#winnerDiv").hide();
+                        $("#roundDiv").show();
+                    }
+                    $("#@nameof(Model.Round)").val(round);
+                    $("#roundLabel").text("Round: " + round);
+                }
+            }
+
+            $("#decreaseButton").click(changeRound(-1));
+            $("#increaseButton").click(changeRound(1));
+
+            changeRound(@Model.Round)();
+        });
+</script>

@@ -1,0 +1,28 @@
+﻿@model Tournament.Core.Models.Tournament
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Edit " + Model.DisplayName;
+}
+
+<div class="page-header">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+
+<div class="form-inline center-block text-center">
+    <form asp-controller="Home" asp-action="Edit" class="bottom-left" method="post" style="margin-bottom: 1em">
+        @Html.EditorForModel()
+        <div class="form-group">
+            <label asp-for="DisplayName" class="control-label">Name:</label>
+            <input asp-for="DisplayName" class="form-control"/>
+        </div>
+        <br /><br /><br />
+        <button type="submit" class="btn btn-lg btn-primary form-group">Update</button>
+        <a asp-action="Delete" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-default btn-lg btn-danger">Delete</a>
+    </form>
+    @*<form asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id" method="get">
+        <button type="submit" class="btn btn-lg btn-danger">Delete</button>
+    </form>*@
+</div>
