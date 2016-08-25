@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="Tournament.Windows10.Views.CreatePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Tournament.Windows10.Views"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Tournament.Portable.Models"
+    xmlns:viewModels="using:Tournament.Windows10.ViewModels"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <viewModels:CreatePageViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+    
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <controls:PageHeader Text="{x:Bind ViewModel.Title}"
+                             x:Name="Header"
+            EllipsisVisibility="Collapsed"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignTopWithPanel="True">
+            
+        </controls:PageHeader>
+        
+        <ListView x:Name="Players"
+                  ItemsSource="{x:Bind ViewModel.Tournament.Teams, Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Team">
+                    <TextBox Text="{x:Bind Name, Mode=TwoWay}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </RelativePanel>
+</Page>
+
+
+
+
+
+
+

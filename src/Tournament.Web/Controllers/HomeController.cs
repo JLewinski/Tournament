@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament.Core.ViewModel;
+using Tournament.Portable.ViewModels;
 using Tournament.Web.Data;
 using Tournament.Web.Models;
-using static Tournament.Core.Services.TournamentHelper;
+using static Tournament.Portable.Services.TournamentHelper;
 
 namespace Tournament.Web.Controllers
 {
@@ -30,6 +30,7 @@ namespace Tournament.Web.Controllers
         public IActionResult Index()
         {
             //Gets all the tournaments
+            
             var tournaments = _db.Tournaments
                 .OrderByDescending(t => t.CurrentRound)
                 .ToList();
@@ -85,7 +86,7 @@ namespace Tournament.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Core.Models.Tournament tour)
+        public async Task<IActionResult> Edit(Portable.Models.Tournament tour)
         {
             if (await IsTournamentValid(tour))
             {
@@ -101,7 +102,7 @@ namespace Tournament.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Core.Models.Tournament tour)
+        public async Task<IActionResult> Delete(Portable.Models.Tournament tour)
         {
             if (await IsTournamentValid(tour))
             {
@@ -164,7 +165,7 @@ namespace Tournament.Web.Controllers
         /// </summary>
         /// <param name="tour"></param>
         /// <returns></returns>
-        private async Task<bool> IsTournamentValid(Core.Models.Tournament tour)
+        private async Task<bool> IsTournamentValid(Portable.Models.Tournament tour)
         {
             if (!ModelState.IsValid) return false;
             try
@@ -188,5 +189,8 @@ namespace Tournament.Web.Controllers
                 Console.Out.WriteLine(e.ErrorMessage);
             }
         }
+
+        public IActionResult About() => View();
+        public IActionResult Contact() => View();
     }
 }

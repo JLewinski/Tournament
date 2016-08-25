@@ -1,0 +1,39 @@
+﻿<Page
+    x:Class="Tournament.Windows10.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Tournament.Windows10.Views"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="using:Tournament.Windows10.ViewModels"
+    xmlns:models="using:Tournament.Portable.Models"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <viewModel:HomePageViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <controls:PageHeader x:Name="Header"
+            RelativePanel.AlignTopWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignLeftWithPanel="True"
+            Height="Auto" Text="{x:Bind ViewModel.Title}"
+            EllipsisVisibility="Auto">
+            <controls:PageHeader.SecondaryCommands>
+                <AppBarButton Icon="Setting" Label="Settings"></AppBarButton>
+            </controls:PageHeader.SecondaryCommands>
+        </controls:PageHeader>
+        <ListView 
+            RelativePanel.Below="Header"
+            RelativePanel.AlignHorizontalCenterWithPanel="True"
+            ItemsSource="{x:Bind ViewModel.Tournaments}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Tournament">
+                    <TextBlock Text="{x:Bind DisplayName}"></TextBlock>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </RelativePanel>
+</Page>

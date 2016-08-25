@@ -33,7 +33,7 @@ namespace Tournament.Web.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Core.Models.Tournament> GetAll()
+        public IEnumerable<Portable.Models.Tournament> GetAll()
         {
             return _dbContext.Tournaments.ToList();
         }
@@ -52,13 +52,13 @@ namespace Tournament.Web.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Core.Models.Tournament> GetFromUser(string userId)
+        public IEnumerable<Portable.Models.Tournament> GetFromUser(string userId)
         {
             return _dbContext.Tournaments.Where(tournament => tournament.UserId == userId).ToList();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Core.Models.Tournament tournament)
+        public async Task<IActionResult> Create([FromBody]Portable.Models.Tournament tournament)
         {
             if (tournament == null)
             {
@@ -81,7 +81,7 @@ namespace Tournament.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody]Core.Models.Tournament tournament)
+        public async Task<IActionResult> Update([FromBody]Portable.Models.Tournament tournament)
         {
             if (!await IsTournamentValid(tournament)) return BadRequest();
 
@@ -100,7 +100,7 @@ namespace Tournament.Web.Controllers
         }
 
         [HttpDelete]
-        public async void Delete(Core.Models.Tournament tournament)
+        public async void Delete(Portable.Models.Tournament tournament)
         {
             if (await IsTournamentValid(tournament))
             {
@@ -120,7 +120,7 @@ namespace Tournament.Web.Controllers
         /// </summary>
         /// <param name="tour"></param>
         /// <returns></returns>
-        private async Task<bool> IsTournamentValid(Core.Models.Tournament tour)
+        private async Task<bool> IsTournamentValid(Portable.Models.Tournament tour)
         {
             if (!ModelState.IsValid) return false;
             try

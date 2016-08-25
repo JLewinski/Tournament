@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Tournament.Core.Data;
-using Tournament.Core.Models;
+using Tournament.Portable.Data;
+using Tournament.Portable.Models;
 using Tournament.Web.Models;
 
 namespace Tournament.Web.Data
@@ -21,13 +21,13 @@ namespace Tournament.Web.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
             DataHelper.CreateTournamentModels(builder);
-            builder.Entity<Core.Models.Tournament>()
+            builder.Entity<Portable.Models.Tournament>()
                 .HasOne(t => (ApplicationUser) t.User)
                 .WithMany(u => u.Tournaments)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        public DbSet<Core.Models.Tournament> Tournaments { get; set; }
+        public DbSet<Portable.Models.Tournament> Tournaments { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Match> Matches { get; set; }
