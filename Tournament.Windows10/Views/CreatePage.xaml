@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="Tournament.Windows10.Views.CreatePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:viewModels="using:Tournament.Windows10.ViewModels"
+    xmlns:models="using:Tournament.Portable.Models"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <viewModels:CreatePageViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0">
+
+        <!--  header  -->
+
+        <controls:PageHeader Frame="{x:Bind Frame}" Content="{x:Bind ViewModel.Title}"
+                             x:Name="Header"
+                             RelativePanel.AlignTopWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignLeftWithPanel="True"/>
+
+        <!--  #region content  -->
+
+        <ListView ItemsSource="{x:Bind ViewModel.Teams, Mode=OneWay}"
+                  RelativePanel.Below="NumTeams"
+                  RelativePanel.Above="CreateButton">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Team">
+                    <TextBox Text="{x:Bind Name, Mode=TwoWay}" MinWidth="150" HorizontalAlignment="Center"></TextBox>
+                    <!--Need to add some more stuff-->
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Horizontal" HorizontalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+
+        <TextBox x:Name="NumTeams" Text="{x:Bind ViewModel.NumberTeams, Mode=TwoWay}"
+                 RelativePanel.Below="Header" MinWidth="20" MaxWidth="50"
+                 RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+
+        <Button x:Name="CreateButton"
+                RelativePanel.AlignBottomWithPanel="True"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                HorizontalAlignment="Stretch"
+                Content="Create" Margin="0,0,0,10"
+                Click="{x:Bind ViewModel.Continue}"/>
+        <!--  #endregion  -->
+
+    </RelativePanel>
+</Page>

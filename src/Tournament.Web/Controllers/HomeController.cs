@@ -4,33 +4,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament.Core.ViewModel;
+using Tournament.Portable.ViewModels;
 using Tournament.Web.Data;
 using Tournament.Web.Models;
-using static Tournament.Core.Services.TournamentHelper;
+using static Tournament.Portable.Services.TournamentHelper;
 
 namespace Tournament.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
         public HomeController(
-            ApplicationDbContext dbContext,
+            ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
-            _db = dbContext;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this.db = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            //Gets all the tournaments
-            var tournaments = _db.Tournaments
+            // Gets all the tournaments
+            var tournaments = this.db.Tournaments
                 .OrderByDescending(t => t.CurrentRound)
                 .ToList();
             return View(tournaments);
@@ -40,8 +40,8 @@ namespace Tournament.Web.Controllers
         {
             var userId = (await GetCurrentUserAsync())?.Id;
 
-            //gets all the tournaments connected to the user
-            var tournaments = _db.Tournaments
+            // gets all the tournaments connected to the user
+            var tournaments = this.db.Tournaments
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.CurrentRound)
                 .ToList();
@@ -58,11 +58,13 @@ namespace Tournament.Web.Controllers
             
             if (ModelState.IsValid)
             {
-                //The page uploaded hidden teams which were connected to the tournament so this removes them.
-                if(vm.NumberTeams < vm.Tournament.Teams.Count)
+                // The page uploaded hidden teams which were connected to the tournament so this removes them.
+                if (vm.NumberTeams < vm.Tournament.Teams.Count)
+                {
                     vm.Tournament.Teams.RemoveRange(vm.NumberTeams, vm.Tournament.Teams.Count - vm.NumberTeams);
+                }
 
-                //Connects the user to the tournament
+                // Connects the user to the tournament
                 vm.Tournament.User = await GetCurrentUserAsync();
 
                 foreach (var team in vm.Tournament.Teams)
@@ -71,8 +73,17 @@ namespace Tournament.Web.Controllers
                 }
 
                 MakeNewTournament(vm.Tournament);
-                _db.Add(vm.Tournament);
-                _db.SaveChanges();
+
+                try
+                {
+                    this.db.Add(vm.Tournament);
+                    this.db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    return this.BadRequest(e);
+                }
+                
 
                 return RedirectToAction(nameof(Index));
             }
@@ -81,32 +92,32 @@ namespace Tournament.Web.Controllers
             return View(vm);
         }
 
-        public IActionResult Edit(string id) => View(_db.Tournaments.Single(t => t.Id == id));
+        public IActionResult Edit(string id) => View(this.db.Tournaments.Single(t => t.Id == id));
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Core.Models.Tournament tour)
+        public async Task<IActionResult> Edit(Portable.Models.Tournee tour)
         {
             if (await IsTournamentValid(tour))
             {
-                _db.Update(tour);
-                _db.SaveChanges();
+                this.db.Update(tour);
+                this.db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             PrintErrors();
             return View(tour);
         }
 
-        public IActionResult Delete(string id) => View(_db.Tournaments.Single(t => t.Id == id));
+        public IActionResult Delete(string id) => View(this.db.Tournaments.Single(t => t.Id == id));
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Core.Models.Tournament tour)
+        public async Task<IActionResult> Delete(Portable.Models.Tournee tour)
         {
             if (await IsTournamentValid(tour))
             {
-                _db.Remove(tour);
-                _db.SaveChanges();
+                this.db.Remove(tour);
+                this.db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -117,7 +128,7 @@ namespace Tournament.Web.Controllers
         public IActionResult Round(string id, int round = 0)
         {
             var tour =
-                _db.Tournaments.Include(tournament => tournament.Matches)
+                this.db.Tournaments.Include(tournament => tournament.Matches)
                     .ThenInclude(match => match.Connections)
                     .ThenInclude(team => team.Team)
                     .Single(t => t.Id == id);
@@ -136,10 +147,10 @@ namespace Tournament.Web.Controllers
 
             if (!await IsTournamentValid(tour)) return View(vm);
 
-            UpdateTournament(tour, _db);
+            UpdateTournament(tour, this.db);
 
-            //Check to see if tour has the same matches or not
-            _db.SaveChanges();
+            // Check to see if tour has the same matches or not
+            this.db.SaveChanges();
 
             if (tour.IsFinished)
             {
@@ -156,7 +167,7 @@ namespace Tournament.Web.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
-            return _signInManager.IsSignedIn(HttpContext.User) ? _userManager.GetUserAsync(HttpContext.User) : Task.FromResult<ApplicationUser>(null);
+            return this.signInManager.IsSignedIn(HttpContext.User) ? this.userManager.GetUserAsync(HttpContext.User) : Task.FromResult<ApplicationUser>(null);
         }
 
         /// <summary>
@@ -164,13 +175,13 @@ namespace Tournament.Web.Controllers
         /// </summary>
         /// <param name="tour"></param>
         /// <returns></returns>
-        private async Task<bool> IsTournamentValid(Core.Models.Tournament tour)
+        private async Task<bool> IsTournamentValid(Portable.Models.Tournee tour)
         {
             if (!ModelState.IsValid) return false;
             try
             {
                 tour.User =
-                    _db.Tournaments.Where(t => t.Id == tour.Id).Select(t => t.User).Single();
+                    this.db.Tournaments.Where(t => t.Id == tour.Id).Select(t => t.User).Single();
             }
             catch (Exception)
             {
@@ -188,5 +199,8 @@ namespace Tournament.Web.Controllers
                 Console.Out.WriteLine(e.ErrorMessage);
             }
         }
+
+        public IActionResult About() => View();
+        public IActionResult Contact() => View();
     }
 }

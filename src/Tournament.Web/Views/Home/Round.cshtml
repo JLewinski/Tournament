@@ -1,4 +1,4 @@
-﻿@model Tournament.Core.ViewModel.RoundViewModel
+﻿@model Tournament.Portable.ViewModels.RoundViewModel
 
 @inject UserManager<ApplicationUser> UserManager
 @*
@@ -89,6 +89,7 @@
                     }
                     $("#@nameof(Model.Round)").val(round);
                     $("#roundLabel").text("Round: " + round);
+                    $("#Tournament_CurrentRound").val(round);
                 }
             }
 

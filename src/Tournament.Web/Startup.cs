@@ -13,6 +13,8 @@ namespace Tournament.Web
 {
     public class Startup
     {
+        private const string ConnectionName = "DefaultConnection";
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -26,7 +28,7 @@ namespace Tournament.Web
                 builder.AddUserSecrets();
 
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                //builder.AddApplicationInsightsSettings(developerMode: true);
+                ////builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -42,7 +44,7 @@ namespace Tournament.Web
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("TestLocalConnection")));
+               options.UseSqlServer(Configuration.GetConnectionString(ConnectionName)));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

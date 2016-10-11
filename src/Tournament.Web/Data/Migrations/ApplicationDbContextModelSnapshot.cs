@@ -13,7 +13,7 @@ namespace Tournament.Web.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
+                .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -123,7 +123,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Game", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Game", b =>
                 {
                     b.Property<string>("Id");
 
@@ -142,7 +142,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Match", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Match", b =>
                 {
                     b.Property<string>("Id");
 
@@ -163,7 +163,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("Matches");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.MatchTeam", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.MatchTeam", b =>
                 {
                     b.Property<string>("MatchId");
 
@@ -178,7 +178,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("MatchTeams");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Player", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Player", b =>
                 {
                     b.Property<string>("Id");
 
@@ -195,7 +195,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Team", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Team", b =>
                 {
                     b.Property<string>("Id");
 
@@ -214,7 +214,7 @@ namespace Tournament.Web.Data.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Tournament", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Tournee", b =>
                 {
                     b.Property<string>("Id");
 
@@ -329,54 +329,54 @@ namespace Tournament.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Game", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Game", b =>
                 {
-                    b.HasOne("Tournament.Core.Models.Match", "Match")
+                    b.HasOne("Tournament.Portable.Models.Match", "Match")
                         .WithMany("Games")
                         .HasForeignKey("MatchId");
 
-                    b.HasOne("Tournament.Core.Models.Team", "Team")
+                    b.HasOne("Tournament.Portable.Models.Team", "Team")
                         .WithMany("Games")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Match", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Match", b =>
                 {
-                    b.HasOne("Tournament.Core.Models.Tournament", "Tournament")
+                    b.HasOne("Tournament.Portable.Models.Tournee", "Tournament")
                         .WithMany("Matches")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.MatchTeam", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.MatchTeam", b =>
                 {
-                    b.HasOne("Tournament.Core.Models.Match", "Match")
+                    b.HasOne("Tournament.Portable.Models.Match", "Match")
                         .WithMany("Connections")
                         .HasForeignKey("MatchId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Tournament.Core.Models.Team", "Team")
-                        .WithMany("Connections")
+                    b.HasOne("Tournament.Portable.Models.Team", "Team")
+                        .WithMany()
                         .HasForeignKey("TeamId");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Player", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Player", b =>
                 {
-                    b.HasOne("Tournament.Core.Models.Team", "Team")
+                    b.HasOne("Tournament.Portable.Models.Team", "Team")
                         .WithMany("Players")
                         .HasForeignKey("TeamId");
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Team", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Team", b =>
                 {
-                    b.HasOne("Tournament.Core.Models.Tournament", "Tournament")
+                    b.HasOne("Tournament.Portable.Models.Tournee", "Tournament")
                         .WithMany("Teams")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Tournament.Core.Models.Tournament", b =>
+            modelBuilder.Entity("Tournament.Portable.Models.Tournee", b =>
                 {
                     b.HasOne("Tournament.Web.Models.ApplicationUser", "User")
                         .WithMany("Tournaments")

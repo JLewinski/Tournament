@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "exports": {
+    "Tournament.Portable/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.4",
+      "compile": {
+        "bin/Debug/Tournament.Portable.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/Tournament.Portable.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Tournament.Portable.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}
